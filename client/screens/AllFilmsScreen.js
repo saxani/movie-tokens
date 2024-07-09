@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -6,23 +5,15 @@ import FilmList from '../components/FilmList';
 
 const Stack = createStackNavigator();
 
-const AllFilmsScreen = ({ navigation, films, posterURL }) => {
+const AllFilmsScreen = ({ navigation }) => {
   //Hope to make this dynamic
   const city = 'Seattle, WA';
-
-  if (!films) {
-    return (
-      <View style={styles.container}>
-        <Text>Getting films...</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Now playing near {city}:</Text>
       <View style={styles.listContainer}>
-        <FilmList navigation={navigation} films={films} posterURL={posterURL} />
+        <FilmList navigation={navigation} />
       </View>
     </View>
   );
