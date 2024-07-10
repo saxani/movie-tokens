@@ -1,15 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Dimensions,
-} from 'react-native';
+import { useState, useEffect, useContext, useRef } from 'react';
+import { Modal, StyleSheet, View, Pressable, Dimensions } from 'react-native';
+
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { FilmsContext } from '../context/Films';
 
+import Logo from './Logo';
 import Input from './Input';
 import SearchResults from './SearchResults';
 
@@ -17,19 +12,27 @@ import SearchResults from './SearchResults';
 const menuHeight = 100;
 
 const Search = () => {
-  const { films } = useContext(FilmsContext);
+  const { films, posterURL } = useContext(FilmsContext);
   const [text, setText] = useState('');
   const [results, setResults] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-
-  console.log(results);
+  const inputRef = useRef(null);
 
   const handleText = (newText) => {
     setText(newText);
+  };
 
-    if (newText) {
-      setModalVisible(true);
-    }
+  const handleShowModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleHideModal = () => {
+    setText('');
+    setModalVisible(false);
+  };
+
+  const onShowModal = () => {
+    inputRef.current.focus();
   };
 
   useEffect(() => {
@@ -40,31 +43,49 @@ const Search = () => {
 
   return (
     <View>
-      <Input
-        onChangeText={handleText}
-        placeholder='Search for films...'
-        text={text}
-      />
+      {!modalVisible && (
+        <Input
+          handleShowModal={handleShowModal}
+          marginBottom={12}
+          placeholder='Search for films...'
+          text={text}
+        />
+      )}
 
       <Modal
-        animationType='slide'
+        animationType='fade'
         transparent={true}
         visible={modalVisible}
+        onShow={onShowModal}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
+          // Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Hide Modal</Text>
+        <View style={styles.modalView}>
+          <View style={styles.modalTop}>
+            <Logo />
+            <View style={styles.inputContainer}>
+              <Input
+                onChangeText={handleText}
+                placeholder='Search for films...'
+                text={text}
+                inputRef={inputRef}
+              />
+            </View>
+
+            <Pressable onPress={handleHideModal} style={styles.closeButton}>
+              <AntDesign name='closecircleo' size={30} color='black' />
             </Pressable>
-            <SearchResults results={results} />
           </View>
+
+          {text && (
+            <SearchResults
+              results={results}
+              posterURL={posterURL}
+              handleHideModal={handleHideModal}
+            />
+          )}
         </View>
       </Modal>
     </View>
@@ -72,49 +93,25 @@ const Search = () => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 22,
-  },
   modalView: {
-    width: '100%',
-    height: Dimensions.get('window').height - menuHeight,
-    top: menuHeight,
-    margin: 20,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    top: 47,
+    margin: 0,
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+  },
+  modalTop: {
+    width: Dimensions.get('window').width,
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    justifyContent: 'space-between',
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  inputContainer: {
+    marginTop: -11,
+    marginLeft: -13,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+  closeButton: {
+    marginRight: 10,
   },
 });
 
