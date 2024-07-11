@@ -8,9 +8,6 @@ import Logo from './Logo';
 import Input from './Input';
 import SearchResults from './SearchResults';
 
-//Need a variable somewhere for this so it works in app.js too
-const menuHeight = 100;
-
 const Search = () => {
   const { films, posterURL } = useContext(FilmsContext);
   const [text, setText] = useState('');

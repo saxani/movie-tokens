@@ -86,6 +86,25 @@ async function getMovieDetails(id) {
     .then((json) => (movieDetails = json))
     .catch((err) => console.error('error:' + err));
 
+  const url2 = 'https://api.themoviedb.org/3/movie/1022789/release_dates';
+  const options2 = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: TMDB_AUTH,
+    },
+  };
+
+  await fetch(url2, options2)
+    .then((res) => res.json())
+    .then((json) => {
+      const usInfo = json.results.find(
+        (country) => country['iso_3166_1'] === 'US'
+      );
+      movieDetails.certification = usInfo.release_dates[0].certification;
+    })
+    .catch((err) => console.error('error:' + err));
+
   return movieDetails;
 }
 

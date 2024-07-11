@@ -1,9 +1,6 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 import FilmList from '../components/FilmList';
-
-const Stack = createStackNavigator();
 
 const AllFilmsScreen = ({ navigation }) => {
   //Hope to make this dynamic

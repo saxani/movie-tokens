@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+
+import MoviePoster from './MoviePoster';
 
 const MovieCard = ({ item, posterURL, navigation }) => {
   const [cardWidth, setCardWidth] = useState('');
-  const uri = posterURL + item.poster_path;
   const rating = Math.round(item.vote_average * 10) / 10;
 
   const styles = StyleSheet.create({
@@ -12,11 +13,6 @@ const MovieCard = ({ item, posterURL, navigation }) => {
       padding: 10,
       margin: 10,
       width: '45%',
-    },
-    image: {
-      width: cardWidth - 20,
-      height: (cardWidth - 20) * 1.5,
-      marginBottom: 5,
     },
     title: {
       fontSize: 18,
@@ -44,12 +40,12 @@ const MovieCard = ({ item, posterURL, navigation }) => {
       style={styles.item}
       onPress={handlePress}
     >
-      <Image
-        resizeMode={'contain'}
-        style={styles.image}
-        source={{
-          uri: uri,
-        }}
+      <MoviePoster
+        posterURL={posterURL}
+        path={item.poster_path}
+        width={cardWidth - 20}
+        height={(cardWidth - 20) * 1.5}
+        marginBottom={5}
       />
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.rating}>{rating}/10</Text>

@@ -9,10 +9,11 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 
+import MoviePoster from './MoviePoster';
+
 const SearchResults = ({ results, posterURL, handleHideModal }) => {
   const Item = ({ item }) => {
     const navigation = useNavigation();
-    const uri = posterURL + item.poster_path;
 
     const handlePress = () => {
       navigation.navigate('FilmDetails', {
@@ -24,12 +25,12 @@ const SearchResults = ({ results, posterURL, handleHideModal }) => {
     return (
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.itemContainer}>
-          <Image
-            resizeMode={'contain'}
-            style={styles.image}
-            source={{
-              uri: uri,
-            }}
+          <MoviePoster
+            posterURL={posterURL}
+            path={item.poster_path}
+            width={40}
+            height={60}
+            marginBottom={0}
           />
           <Text style={styles.itemTitle}>{item.title}</Text>
         </View>
@@ -68,10 +69,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flex: 1,
     flexWrap: 'wrap',
-  },
-  image: {
-    width: 40,
-    height: 60,
   },
 });
 
