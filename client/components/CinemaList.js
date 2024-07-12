@@ -15,7 +15,9 @@ const Time = ({ item }) => (
 const ViewingType = ({ item }) => (
   <View>
     <View style={styles.typeContainer}>
-      <Text style={[styles.text, styles.type]}>{item.type}</Text>
+      <Text style={[styles.text, styles.type]}>
+        {item.type ? item.type : 'Standard'}
+      </Text>
       <FlatList
         style={styles.timeContainer}
         data={item.time}
@@ -33,7 +35,9 @@ const Cinema = ({ item }) => (
     <FlatList
       data={item.showing}
       renderItem={({ item }) => <ViewingType item={item} />}
-      keyExtractor={(item) => item.type}
+      keyExtractor={(item, index) =>
+        item.type ? item.type : `${index}-standard`
+      }
     />
   </View>
 );
