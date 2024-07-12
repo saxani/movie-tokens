@@ -5,6 +5,13 @@ const FilmsContext = createContext(1);
 const Provider = ({ children }) => {
   const [films, setFilms] = useState('');
   const [posterURL, setPosterURL] = useState('');
+  const [selectedFilm, setSelectedFilm] = useState({
+    title: '',
+    date: '',
+    theater: '',
+    viewType: '',
+    time: '',
+  });
 
   const getNowPlayingFilms = () => {
     fetch('http://192.168.2.131:4000/now-playing')
@@ -26,10 +33,29 @@ const Provider = ({ children }) => {
       });
   };
 
+  const updateSelectedFilm = ({ title, date, theater, viewType, time }) => {
+    console.log(title, date, theater, viewType, time);
+
+    let updatedValues = {};
+
+    title ? (updatedValues.title = title) : '';
+    date ? (updatedValues.date = date) : '';
+    theater ? (updatedValues.theater = theater) : '';
+    viewType ? (updatedValues.viewType = viewType) : '';
+    time ? (updatedValues.time = time) : '';
+
+    setSelectedFilm((selectedFilm) => ({
+      ...selectedFilm,
+      ...updatedValues,
+    }));
+  };
+
   const value = {
     films,
     posterURL,
     getNowPlayingFilms,
+    updateSelectedFilm,
+    selectedFilm,
   };
 
   return (

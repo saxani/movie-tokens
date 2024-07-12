@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { FilmsContext } from '../context/Films';
 import { dateFormatter } from '../utilities/dateFormatter';
 import CinemaList from './CinemaList';
 
@@ -25,11 +26,13 @@ const Date = ({ item, num, handleDatePress, currentIndex }) => {
 };
 
 const Showtimes = ({ showtimesDetails }) => {
+  const { updateSelectedFilm } = useContext(FilmsContext);
   const [dateIndex, setDateIndex] = useState(0);
   const dates = dateFormatter();
 
   const handleDatePress = (num) => {
     setDateIndex(num);
+    updateSelectedFilm({ date: dates[num] });
   };
 
   if (!dates) {

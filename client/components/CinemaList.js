@@ -1,49 +1,53 @@
-import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
 
-const Time = ({ item }) => (
-  <TouchableOpacity style={styles.timeButton}>
-    <Text style={[styles.text, styles.timeText]}>{item}</Text>
-  </TouchableOpacity>
-);
+import MovieTime from './MovieTime';
 
-const ViewingType = ({ item }) => (
-  <View>
-    <View style={styles.typeContainer}>
-      <Text style={[styles.text, styles.type]}>
-        {item.type ? item.type : 'Standard'}
-      </Text>
+const ViewingType = ({ item, name }) => {
+  const type = item.type ? item.type : 'Standard';
+
+  return (
+    <View>
+      <View style={styles.typeContainer}>
+        <Text style={[styles.text, styles.type]}>{type}</Text>
+        <FlatList
+          style={styles.timeContainer}
+          data={item.time}
+          renderItem={({ item }) => (
+            <MovieTime item={item} type={type} name={name} />
+          )}
+          keyExtractor={(item, index) => `${index}-${item.time}`}
+        />
+      </View>
+    </View>
+  );
+};
+
+const Cinema = ({ item }) => {
+  const location = item;
+
+  return (
+    <View style={styles.cinemaContainer}>
+      <Text style={styles.text}>{location.name}</Text>
+      <Text style={[styles.text, styles.address]}>{location.address}</Text>
       <FlatList
-        style={styles.timeContainer}
-        data={item.time}
-        renderItem={({ item }) => <Time item={item} />}
-        keyExtractor={(item) => item.time}
+        data={location.showing}
+        renderItem={({ item }) => (
+          <ViewingType item={item} name={location.name} />
+        )}
+        keyExtractor={(item, index) =>
+          item.type ? item.type : `${index}-standard`
+        }
       />
     </View>
-  </View>
-);
-
-const Cinema = ({ item }) => (
-  <View style={styles.cinemaContainer}>
-    <Text style={styles.text}>{item.name}</Text>
-    <Text style={[styles.text, styles.address]}>{item.address}</Text>
-    <FlatList
-      data={item.showing}
-      renderItem={({ item }) => <ViewingType item={item} />}
-      keyExtractor={(item, index) =>
-        item.type ? item.type : `${index}-standard`
-      }
-    />
-  </View>
-);
+  );
+};
 
 const CinemaList = ({ cinemaTimes }) => {
   const data = cinemaTimes.theaters;
+
+  if (!cinemaTimes) {
+    return;
+  }
 
   return (
     <FlatList

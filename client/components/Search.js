@@ -34,7 +34,11 @@ const Search = () => {
 
   useEffect(() => {
     if (films) {
-      setResults(films.filter((film) => film.title.includes(text)));
+      setResults(
+        films.filter((film) =>
+          film.title.toLowerCase().includes(text.toLowerCase())
+        )
+      );
     }
   }, [text]);
 

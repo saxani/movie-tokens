@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { FilmsContext } from '../context/Films';
 import About from './About';
 import Showtimes from './Showtimes';
 
 const DetailsTabs = ({ movieDetails, showtimesDetails }) => {
+  const { updateSelectedFilm } = useContext(FilmsContext);
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    updateSelectedFilm({ title: movieDetails.original_title });
+  }, [movieDetails]);
 
   return (
     <View>
