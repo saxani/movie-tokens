@@ -8,6 +8,8 @@ import { FilmsContext } from '../context/Films';
 
 const FilmDetails = ({ route }) => {
   const [movieDetails, setMovieDetails] = useState('');
+  const [showtimesDetails, setShowtimesDetails] = useState('');
+
   const [runtime, setRuntime] = useState('');
   const [rating, setRating] = useState('');
   const { posterURL } = useContext(FilmsContext);
@@ -24,9 +26,10 @@ const FilmDetails = ({ route }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setMovieDetails(data);
-        setRuntime(timeFormatter(data.runtime));
-        setRating(Math.round(data.vote_average * 10) / 10);
+        setMovieDetails(data[0]);
+        setShowtimesDetails(data[1]);
+        setRuntime(timeFormatter(data[0].runtime));
+        setRating(Math.round(data[0].vote_average * 10) / 10);
       })
       .catch((error) => {
         console.error(error);
@@ -47,20 +50,25 @@ const FilmDetails = ({ route }) => {
         </View>
 
         <View style={styles.headerRight}>
-          <Text>{movieDetails.original_title}</Text>
-          <Text>{movieDetails.certification}</Text>
-          <Text>{runtime}</Text>
-          <Text>{rating}/10</Text>
+          <Text style={styles.text}>{movieDetails.original_title}</Text>
+          <Text style={styles.text}>{movieDetails.certification}</Text>
+          <Text style={styles.text}>{runtime}</Text>
+          <Text style={styles.text}>{rating}/10</Text>
         </View>
       </View>
-      <DetailsTabs movieDetails={movieDetails} />
+      <DetailsTabs
+        movieDetails={movieDetails}
+        showtimesDetails={showtimesDetails}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    padding: 20,
+    backgroundColor: '#000',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -70,6 +78,9 @@ const styles = StyleSheet.create({
   },
   headerRight: {
     marginLeft: 20,
+  },
+  text: {
+    color: '#fff',
   },
 });
 

@@ -70,8 +70,18 @@ async function getNowPlaying() {
   });
 }
 
+const readFile = (path) =>
+  new Promise((resolve, reject) =>
+    fs.readFile(path, (err, data) => {
+      if (err) reject(err);
+
+      resolve(data);
+    })
+  );
+
 async function getMovieDetails(id) {
   let movieDetails;
+  let showtimes = null;
   const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US`;
   const options = {
     method: 'GET',
@@ -86,7 +96,7 @@ async function getMovieDetails(id) {
     .then((json) => (movieDetails = json))
     .catch((err) => console.error('error:' + err));
 
-  const url2 = 'https://api.themoviedb.org/3/movie/1022789/release_dates';
+  const url2 = `https://api.themoviedb.org/3/movie/${id}/release_dates`;
   const options2 = {
     method: 'GET',
     headers: {
@@ -105,7 +115,24 @@ async function getMovieDetails(id) {
     })
     .catch((err) => console.error('error:' + err));
 
-  return movieDetails;
+  const movieNamePath =
+    './showtimes/' +
+    movieDetails.original_title
+      .toLowerCase()
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+      .replaceAll(' ', '_') +
+    '.json';
+  console.log('Movie Path should be: ' + movieNamePath);
+
+  if (fs.existsSync(movieNamePath)) {
+    console.log(`The file or directory at '${movieNamePath}' exists.`);
+    const data = await readFile(movieNamePath);
+    const json = JSON.parse(data);
+    showtimes = json.showtimes;
+  } else {
+    console.log(`The file or directory at '${movieNamePath}' does not exist.`);
+  }
+  return [movieDetails, showtimes];
 }
 
 async function getDbConfig() {
@@ -156,8 +183,9 @@ app.get('/poster-url', (req, res) => {
 });
 
 app.post('/movie-details', async (req, res) => {
-  const movieDetails = await getMovieDetails(req.body.id);
-  res.send(movieDetails);
+  const [movieDetails, showtimes] = await getMovieDetails(req.body.id);
+
+  res.send([movieDetails, showtimes]);
 });
 
 app.listen(port, () => {

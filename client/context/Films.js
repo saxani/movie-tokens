@@ -19,7 +19,6 @@ const Provider = ({ children }) => {
     fetch('http://192.168.2.131:4000/poster-url')
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.poster);
         setPosterURL(data.poster);
       })
       .catch((error) => {
