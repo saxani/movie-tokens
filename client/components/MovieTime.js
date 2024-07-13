@@ -6,36 +6,51 @@ import { FilmsContext } from '../context/Films';
 
 const MovieTime = ({ item, type, name }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { selectedFilm, updateSelectedFilm } = useContext(FilmsContext);
+  const { selectedFilm, updateSelectedFilm, updateToSee } =
+    useContext(FilmsContext);
 
-  const handlePress = () => {
+  const handleTimePress = () => {
     updateSelectedFilm({ time: item, viewType: type, theater: name });
     setModalVisible(true);
   };
 
+  const handleConfirmPress = () => {
+    updateToSee(selectedFilm.title);
+    setModalVisible(false);
+  };
+
   return (
     <View>
-      <TouchableOpacity style={styles.timeButton} onPress={handlePress}>
+      <TouchableOpacity style={styles.timeButton} onPress={handleTimePress}>
         <Text style={[styles.text, styles.timeText]}>{item}</Text>
       </TouchableOpacity>
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
+      <Modal animationType='slide' transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </TouchableOpacity>
-            <Text>{selectedFilm.title}</Text>
-            <Text>{selectedFilm.date}</Text>
-            <Text>{selectedFilm.theater}</Text>
-            <Text>{selectedFilm.viewType}</Text>
-            <Text>{selectedFilm.time}</Text>
+            <Text style={{ marginBottom: 10 }}>
+              Do you want to get tickets for the following film?
+            </Text>
+            <Text>Name: {selectedFilm.title}</Text>
+            <Text>Date: {selectedFilm.date}</Text>
+            <Text>Theater: {selectedFilm.theater}</Text>
+            <Text>Time: {selectedFilm.time}</Text>
+            {selectedFilm.viewType && (
+              <Text>Type: {selectedFilm.viewType}</Text>
+            )}
+            <View style={styles.buttonWrapper}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleConfirmPress}
+              >
+                <Text style={styles.textStyle}>Confirm</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -47,6 +62,19 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
   },
+  buttonWrapper: {
+    flexDirection: 'row',
+  },
+  button: {
+    marginTop: 15,
+    marginRight: 15,
+    borderRadius: 5,
+    borderColor: '#000',
+    borderWidth: 1,
+    padding: 20,
+    width: 100,
+    alignItems: 'center',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -54,16 +82,24 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
-    width: 300,
-    height: 200,
-    margin: 0,
+    width: '80%',
     backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   timeButton: {
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 5,
-    borderStyle: 'solid',
     width: 60,
     height: 30,
     margin: 5,

@@ -12,6 +12,8 @@ const Provider = ({ children }) => {
     viewType: '',
     time: '',
   });
+  const [toSee, setToSee] = useState('');
+  const [seenFilms, setSeenFilms] = useState([]);
 
   const getNowPlayingFilms = () => {
     fetch('http://192.168.2.131:4000/now-playing')
@@ -34,8 +36,6 @@ const Provider = ({ children }) => {
   };
 
   const updateSelectedFilm = ({ title, date, theater, viewType, time }) => {
-    console.log(title, date, theater, viewType, time);
-
     let updatedValues = {};
 
     title ? (updatedValues.title = title) : '';
@@ -50,12 +50,25 @@ const Provider = ({ children }) => {
     }));
   };
 
+  const updateToSee = (film) => {
+    setToSee(film);
+  };
+
+  const updateSeenFilms = (film) => {
+    setSeenFilms((seenFilms) => ({
+      ...seenFilms,
+      ...film,
+    }));
+  };
+
   const value = {
     films,
     posterURL,
     getNowPlayingFilms,
     updateSelectedFilm,
     selectedFilm,
+    updateSeenFilms,
+    updateToSee,
   };
 
   return (

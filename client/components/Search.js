@@ -1,7 +1,9 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Modal, StyleSheet, View, Pressable, Dimensions } from 'react-native';
 
+import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
+
 import { FilmsContext } from '../context/Films';
 
 import Logo from './Logo';
@@ -45,11 +47,12 @@ const Search = () => {
   return (
     <View>
       {!modalVisible && (
-        <Input
-          handleShowModal={handleShowModal}
-          marginBottom={12}
-          placeholder='Search for films...'
-          text={text}
+        <Entypo
+          style={{ marginRight: 5 }}
+          onPress={handleShowModal}
+          name='magnifying-glass'
+          size={32}
+          color='black'
         />
       )}
 
@@ -59,7 +62,6 @@ const Search = () => {
         visible={modalVisible}
         onShow={onShowModal}
         onRequestClose={() => {
-          // Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}
       >

@@ -6,7 +6,6 @@ const Search = ({
   placeholder,
   text,
   inputRef,
-  handleShowModal,
   marginBottom,
 }) => {
   const styles = StyleSheet.create({
@@ -43,7 +42,6 @@ const Search = ({
       />
       <TextInput
         autoCorrect={false}
-        onFocus={handleShowModal}
         style={styles.input}
         onChangeText={onChangeText}
         placeholder={placeholder}
